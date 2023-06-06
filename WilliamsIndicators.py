@@ -16,12 +16,16 @@ class WilliamsIndicators(object):
         '''
 
         # check if current bar is bull divergent bar.
-        if float(candles_2rows_dataframe['Low'][0]) > float(candles_2rows_dataframe['Low'][1]) and \
-                float(candles_2rows_dataframe['Close'][1]) > \
-                (float(candles_2rows_dataframe['High'][1]) + float(candles_2rows_dataframe['Low'][1])) / 2:
-                    return True
-        else:
-            return False
+        return (
+            float(candles_2rows_dataframe['Low'][0])
+            > float(candles_2rows_dataframe['Low'][1])
+            and float(candles_2rows_dataframe['Close'][1])
+            > (
+                float(candles_2rows_dataframe['High'][1])
+                + float(candles_2rows_dataframe['Low'][1])
+            )
+            / 2
+        )
 
     def check_bull_bar(self, candles_2rows_list):
         '''
@@ -32,12 +36,12 @@ class WilliamsIndicators(object):
         '''
 
         # check if current bar is bull divergent bar.
-        if float(candles_2rows_list[0][3]) > float(candles_2rows_list[1][3]) and \
-                float(candles_2rows_list[1][4]) > \
-                (float(candles_2rows_list[1][2]) + float(candles_2rows_list[1][3])) / 2:
-                    return True
-        else:
-            return False
+        return (
+            float(candles_2rows_list[0][3]) > float(candles_2rows_list[1][3])
+            and float(candles_2rows_list[1][4])
+            > (float(candles_2rows_list[1][2]) + float(candles_2rows_list[1][3]))
+            / 2
+        )
 
 
     def check_bear_bar(self, candles_2rows_list):
@@ -48,12 +52,12 @@ class WilliamsIndicators(object):
         candles indicies: 0 - Open time, 1 - Open, 2 - High, 3 - Low, 4 - Close, 5 - Volume, 6 - Close time
         '''
 
-        if float(candles_2rows_list[0][2]) < float(candles_2rows_list[1][2]) and \
-                float(candles_2rows_list[1][4]) < \
-                (float(candles_2rows_list[1][2]) + float(candles_2rows_list[1][3])) / 2:
-            return True
-        else:
-            return False
+        return (
+            float(candles_2rows_list[0][2]) < float(candles_2rows_list[1][2])
+            and float(candles_2rows_list[1][4])
+            < (float(candles_2rows_list[1][2]) + float(candles_2rows_list[1][3]))
+            / 2
+        )
 
 
     def check_bear_bar_dataframe(self, candles_2rows_dataframe):
@@ -63,12 +67,16 @@ class WilliamsIndicators(object):
         :param candles_2rows_dataframe: dataframe that consists of two rows of candles in chronological order, created by get_num_rows(self, n)
         '''
 
-        if float(candles_2rows_dataframe['High'][0]) < float(candles_2rows_dataframe['High'][1]) and \
-                float(candles_2rows_dataframe['Close'][1]) < \
-                (float(candles_2rows_dataframe['High'][1]) + float(candles_2rows_dataframe['Low'][1])) / 2:
-            return True
-        else:
-            return False
+        return (
+            float(candles_2rows_dataframe['High'][0])
+            < float(candles_2rows_dataframe['High'][1])
+            and float(candles_2rows_dataframe['Close'][1])
+            < (
+                float(candles_2rows_dataframe['High'][1])
+                + float(candles_2rows_dataframe['Low'][1])
+            )
+            / 2
+        )
 
 
     def SMMA(self, candles_list, n_smoothing_periods, future_shift):
@@ -163,13 +171,13 @@ class WilliamsIndicators(object):
             teeth_last_candles_trend.append(last_teeth_diff)
             lips_last_candles_trend.append(last_lips_diff)
 
-        alligator_distances_dict = {}
-        alligator_distances_dict['CurrentTrendValue'] = sum(self.distance_list[-6:-1]) / (average_distance * 5)
-        alligator_distances_dict['jaw_last_candles_trend(13/8)'] = jaw_last_candles_trend
-        alligator_distances_dict['teeth_last_candles_trend(8/5)'] = teeth_last_candles_trend
-        alligator_distances_dict['lips_last_candles_trend(5/3)'] = lips_last_candles_trend
-
-        return alligator_distances_dict
+        return {
+            'CurrentTrendValue': sum(self.distance_list[-6:-1])
+            / (average_distance * 5),
+            'jaw_last_candles_trend(13/8)': jaw_last_candles_trend,
+            'teeth_last_candles_trend(8/5)': teeth_last_candles_trend,
+            'lips_last_candles_trend(5/3)': lips_last_candles_trend,
+        }
 
 
     def distance_between_alligator_and_candles(self, two_candles_list, two_candles_index):
@@ -196,11 +204,11 @@ class WilliamsIndicators(object):
 
 
         #if alligator min or max values do not cross the last candle - indicator is valid
-        if  float(two_candles_list[-1][3]) < min_alligator_value or \
-            max_alligator_value > float(two_candles_list[-1][2]):
-            return True
-        else:
-            return False
+        return float(
+            two_candles_list[-1][3]
+        ) < min_alligator_value or max_alligator_value > float(
+            two_candles_list[-1][2]
+        )
 
 
     def check_bar_type(self, two_candles_list):
@@ -292,11 +300,7 @@ class WilliamsIndicators(object):
         # print('dist2', dist2)
         # print(dist1 / dist2)
 
-        if dist1 / dist2 > 1.012 or dist1/dist2 < 0.9:
-            #print('True')
-            return True
-
-        return False
+        return dist1 / dist2 > 1.012 or dist1/dist2 < 0.9
 
 
 
